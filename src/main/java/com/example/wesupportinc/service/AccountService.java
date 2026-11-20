@@ -6,4 +6,5 @@ public interface AccountService {
 
      public Long createAccount(AccountDto accountDto);
 
+     public AccountDto getAccountById(Long customerNumber);
 }

@@ -25,14 +25,11 @@ public class AccountController {
           this.accountService = accountService;
      }
 
-     // @GetMapping()
-     // public ResponseEntity<ApiResponse> getAccount() {
-     // return ResponseEntity.ok("Account details");
-     // }
+     // if got time, I will use ControllerAdvice to handle the exception and return a
+     // proper response instead of handling it in the controller
 
      @PostMapping()
      public ResponseEntity<ApiResponse> createAccount(@RequestBody AccountDto accountDto) {
-          // Logic to create an account
           ApiResponse response = new ApiResponse();
 
           try {
@@ -51,10 +48,20 @@ public class AccountController {
           return ResponseEntity.ok(response);
      }
 
-     // @GetMapping("/{customerNumber}")
-     // public ResponseEntity<ApiResponse> getAccountById(@PathVariable Long
-     // customerNumber) {
-     // // Logic to retrieve account by ID
-     // return ResponseEntity.ok("Account details for ID: " + customerNumber);
-     // }
+     @GetMapping("/{customerNumber}")
+     public ResponseEntity<ApiResponse> getAccountById(@PathVariable Long customerNumber) {
+          ApiResponse response = new ApiResponse();
+
+          try {
+               AccountDto accountDto = accountService.getAccountById(customerNumber);
+               response.setTransactionStatusDescription("Customer account found");
+               response.setTransactionStatusCode(HttpStatus.FOUND.value());
+               response.setData(accountDto);
+          } catch (Exception e) {
+               response.setTransactionStatusDescription(e.getMessage());
+               response.setTransactionStatusCode(HttpStatus.NOT_FOUND.value());
+          }
+
+          return ResponseEntity.ok(response);
+     }
 }
